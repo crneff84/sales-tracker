@@ -2,23 +2,16 @@ import java.util.List;
 import java.util.ArrayList;
 import org.sql2o.*;
 
-public class Product {
-  private int id;
-  private String name;
-  private int price;
-  private String description;
-  private int quantity;
-  private int categoryId;
+public abstract class Product {
+  public int id;
+  public String name;
+  public int price;
+  public String description;
+  public int quantity;
+  public int categoryId;
+  public String type;
 
   private static final int MIN_PRODUCT_QUANTITY = 0;
-
-  public Product(String name, int price, String description, int quantity, int categoryId) {
-    this.name = name;
-    this.price = price;
-    this.description = description;
-    this.quantity = quantity;
-    this.categoryId = categoryId;
-  }
 
   public int getId() {
     return id;
@@ -59,22 +52,32 @@ public class Product {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO products (name, price, description, quantity, categoryId) VALUES (:name, :price, :description, :quantity, :categoryId)";
+      String sql = "INSERT INTO products (name, price, description, quantity, categoryId, type) VALUES (:name, :price, :description, :quantity, :categoryId, :type)";
       this.id = (int) con.createQuery(sql, true)
                          .addParameter("name", name)
                          .addParameter("price", price)
                          .addParameter("description", description)
                          .addParameter("quantity", quantity)
                          .addParameter("categoryId", categoryId)
+                         .addParameter("type", type)
                          .executeUpdate()
                          .getKey();
     }
   }
 
-  public static List<Product> all() {
+  // public static List<Product> all() {
+  //   try(Connection con = DB.sql2o.open()) {
+  //     String sql = "SELECT * FROM products";
+  //     return con.createQuery(sql).executeAndFetch(Product.class);
+  //   }
+  // }
+
+  public static Product find(int id) {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM products";
-      return con.createQuery(sql).executeAndFetch(Product.class);
+      String sql = "SELECT * FROM products WHERE id = :id";
+      return con.createQuery(sql)
+                .addParameter("id", id)
+                .executeAndFetchFirst(Product.class);
     }
   }
 }
