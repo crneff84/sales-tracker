@@ -11,7 +11,7 @@ public abstract class Product {
   public int categoryId;
   public String type;
 
-  private static final int MIN_PRODUCT_QUANTITY = 0;
+  public static final int MIN_PRODUCT_QUANTITY = 0;
 
   public int getId() {
     return id;
@@ -65,13 +65,6 @@ public abstract class Product {
     }
   }
 
-  // public static List<Product> all() {
-  //   try(Connection con = DB.sql2o.open()) {
-  //     String sql = "SELECT * FROM products";
-  //     return con.createQuery(sql).executeAndFetch(Product.class);
-  //   }
-  // }
-
   public static Product find(int id) {
     try(Connection con = DB.sql2o.open()) {
       String sql = "SELECT * FROM products WHERE id = :id";
@@ -80,4 +73,5 @@ public abstract class Product {
                 .executeAndFetchFirst(Product.class);
     }
   }
+
 }

@@ -30,4 +30,18 @@ public class Accessory extends Product {
     }
   }
 
+  public void buy(int buyQuantity) {
+    if (quantity <= MIN_PRODUCT_QUANTITY) {
+      throw new UnsupportedOperationException("You cannot buy anymore of this accessory");
+    }
+    try(Connection con = DB.sql2o.open()) {
+      this.quantity = this.quantity - buyQuantity;
+      String sql = "UPDATE products SET quantity = :quantity WHERE id = :id";
+      con.createQuery(sql)
+      .addParameter("quantity", this.quantity)
+      .addParameter("id", this.id)
+      .executeUpdate();
+    }
+  }
+
 }

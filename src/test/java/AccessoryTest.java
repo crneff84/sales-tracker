@@ -76,4 +76,22 @@ public class AccessoryTest {
     assertEquals(Accessory.find(secondAccessory.getId()), secondAccessory);
   }
 
+  @Test
+  public void buy_decrementsQuantityOfAccessory_true() {
+    Accessory firstAccessory = new Accessory("Sunglasses", 50, "Polarized", 20, 1);
+    firstAccessory.save();
+    int quantityBefore = firstAccessory.getQuantity();
+    firstAccessory.buy(2);
+    System.out.println(firstAccessory.getQuantity());
+    int quantityAfter = firstAccessory.getQuantity();
+    assertTrue(quantityBefore > quantityAfter);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void buy_throwsExcpetionIfQuantityIsDepleted_true() {
+    Accessory firstAccessory = new Accessory("Sunglasses", 50, "Polarized", 20, 1);
+    firstAccessory.save();
+    firstAccessory.buy(21);
+  }
+
 }
